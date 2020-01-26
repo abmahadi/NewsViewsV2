@@ -3,7 +3,7 @@ package com.example.hometask;
 public class UserInformation {
 
     private  int id;
-    private int User;
+    private String user;
     private String name;
     private String who;
     private int  image;
@@ -12,9 +12,9 @@ public class UserInformation {
     public UserInformation() {
     }
 
-    public UserInformation(int id, int user, String name, String who, int image) {
+    public UserInformation(int id, String user, String name, String who, int image) {
         this.id = id;
-        User = user;
+        this.user = user;
         this.name = name;
         this.who = who;
         this.image = image;
@@ -28,12 +28,12 @@ public class UserInformation {
         this.id = id;
     }
 
-    public int getUser() {
-        return User;
+    public String getUser() {
+        return user;
     }
 
-    public void setUser(int user) {
-        User = user;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getName() {

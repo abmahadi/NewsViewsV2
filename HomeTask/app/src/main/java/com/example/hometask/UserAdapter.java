@@ -1,5 +1,7 @@
 package com.example.hometask;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
-    @NonNull
-
+    Context context;
     private List<UserInformation> users;
-    public UserAdapter(List<UserInformation> users)
-    {
-        this.users =users;
+
+    public UserAdapter(Context context, List<UserInformation> users) {
+        this.context = context;
+        this.users = users;
     }
+
+
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.model_user,parent,false);
@@ -29,13 +34,29 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        UserInformation userInformation= users.get(position);
+        final UserInformation userInformation= users.get(position);
 
         holder.userImage.setImageResource(userInformation.getImage());
         holder.id.setText(userInformation.getId());
         holder.user.setText(userInformation.getUser());
         holder.name.setText(userInformation.getName());
         holder.who.setText(userInformation.getWho());
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context,SecondActivity.class);
+                intent.putExtra("userImage",userInformation.getImage());
+                intent.putExtra("id",userInformation.getId());
+                intent.putExtra("user",userInformation.getUser());
+                intent.putExtra("name",userInformation.getName());
+                intent.putExtra("who",userInformation.getWho());
+
+                context.startActivity(intent);
+
+            }
+        });
     }
 
     @Override
