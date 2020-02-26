@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/my_projects"
         android:textAlignment="center"
-        android:textColor="@color/White"
+        android:textColor="@color/mainColor"
         android:textSize="30dp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"></TextView>
@@ -24,6 +24,6 @@
         android:textSize="15dp"
         android:layout_marginTop="10dp"
         android:textAlignment="center"
-        android:textColor="@color/White"></TextView>
+        android:textColor="@color/mainColor"></TextView>
 
 </LinearLayout>
