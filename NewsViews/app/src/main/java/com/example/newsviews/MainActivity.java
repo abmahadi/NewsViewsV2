@@ -6,21 +6,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Switch;
+import android.widget.Toast;
 
+import com.example.newsviews.Adapter.NewsAdapter;
+import com.example.newsviews.Model.HeadLine;
+import com.example.newsviews.Utils.NetworkService;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayoutMain;
+    private RecyclerView newsRV;
+    private NewsAdapter newsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +53,69 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        swipeRefreshLayoutMain.setOnRefreshListener(this);
+        getHeadLines();
+    }
+
+    private void getHeadLines() {
+
+        swipeRefreshLayoutMain.setRefreshing(false);
+
+        NetworkService networkService = new NetworkService();
+
+        networkService.GetTopHeadlines("ca","d03ebaab03fa45a492700bc9cd046217")
+                .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<HeadLine>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(HeadLine headLine) {
+
+                Log.v("", "");
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(MainActivity.this);
+                }
+                newsAdapter = new NewsAdapter(MainActivity.this,builder);
+
+                newsRV.setAdapter(newsAdapter);
+
+                newsRV.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                newsAdapter.setItem(headLine);
+
+
+
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                Toast.makeText(MainActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                swipeRefreshLayoutMain.setRefreshing(false);
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+
+
+
+
+
     }
 
     @Override
@@ -51,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout =findViewById(R.id.drawe_layout_main_activity);
         navigationView = findViewById(R.id.nav_view);
         toolbar =findViewById(R.id.toolbar);
+        swipeRefreshLayoutMain = findViewById(R.id.swaipe_layout);
+        newsRV = findViewById(R.id.mainActivity_RV);
+
     }
 
     @Override
@@ -95,5 +179,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayoutMain.setRefreshing(true);
+        getHeadLines();
+
     }
 }
