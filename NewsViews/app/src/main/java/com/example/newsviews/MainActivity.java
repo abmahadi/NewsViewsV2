@@ -20,13 +20,13 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar =findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         init();
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void init() {
         drawerLayout =findViewById(R.id.drawe_layout_main_activity);
         navigationView = findViewById(R.id.nav_view);
+        toolbar =findViewById(R.id.toolbar);
     }
 
     @Override
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home :
 
                 startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finish();
 
                 break;
             case R.id.nav_about :
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_exit :
 
-                //Exit pop up
+                //Exit Dialogue box
 
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
