@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NetworkService networkService = new NetworkService();
 
-        networkService.GetTopHeadlines("ca","d03ebaab03fa45a492700bc9cd046217")
+        networkService.GetTopHeadlines("us","d03ebaab03fa45a492700bc9cd046217")
                 .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<HeadLine>() {
